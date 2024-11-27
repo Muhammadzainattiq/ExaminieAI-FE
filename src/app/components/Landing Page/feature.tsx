@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tilt from 'react-parallax-tilt';
-import { motion } from 'framer-motion';
+import gsap from 'gsap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGraduate, faChalkboardTeacher, faFileAlt, faUserCog, faSlidersH, faRobot, faChartLine } from '@fortawesome/free-solid-svg-icons';
 
 const FeatureSection = () => {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const featuresRef = useRef(null);
 
   const features = [
     {
@@ -49,21 +50,30 @@ const FeatureSection = () => {
 
   const displayedFeatures = showAllFeatures ? features : features.slice(0, 3);
 
+  useEffect(() => {
+    // Initial animation for features
+    gsap.fromTo(
+      featuresRef.current.children,
+      {
+        opacity: 0,
+        y: 20
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.2
+      }
+    );
+  }, [showAllFeatures]);
+
   return (
     <section className="p-10 text-center bg-gray-100">
       <h2 className="text-3xl font-bold mb-8 text-black">Dynamic Features</h2>
       <p className="text-lg mb-6 text-black">Our sales team will get in touch to better understand your needs, and either help you with the sign-up process.</p>
       
       {/* Feature Cards */}
-      <motion.div 
-        className="flex flex-wrap gap-6 justify-center"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0, y: 20 },
-          visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.2 } }
-        }}
-      >
+      <div ref={featuresRef} className="flex flex-wrap gap-6 justify-center">
         {displayedFeatures.map((feature, index) => (
           <Tilt
             key={index}
@@ -73,27 +83,23 @@ const FeatureSection = () => {
             glareMaxOpacity={0.3}
             className="w-full sm:w-80 h-60 bg-opacity-10 bg-gray-200 rounded-lg shadow-lg p-6 hover:bg-green-200 transition-all backdrop-blur-md"
           >
-            <motion.div className="relative w-full h-full rounded-lg overflow-hidden">
+            <div className="relative w-full h-full rounded-lg overflow-hidden">
               {/* Icon */}
-              <motion.div 
-                className="flex items-center justify-center mb-4"
-                whileHover={{ scale: 1.2, rotate: 15 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <div className="w-12 h-12 bg-opacity-25 bg-green-500 rounded-full flex items-center justify-center text-black text-xl">
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-opacity-25 bg-green-500 rounded-full flex items-center justify-center text-black text-xl hover:scale-110 transition-transform">
                   <FontAwesomeIcon icon={feature.icon} color="green" size="lg" />
                 </div>
-              </motion.div>
+              </div>
 
               {/* Heading */}
               <div className="text-lg font-semibold mb-2 text-black">{feature.title}</div>
 
               {/* Description */}
               <p className="text-sm font-medium text-black opacity-75">{feature.description}</p>
-            </motion.div>
+            </div>
           </Tilt>
         ))}
-      </motion.div>
+      </div>
 
       {/* Show More / Show Less Button */}
       <div className="mt-8">

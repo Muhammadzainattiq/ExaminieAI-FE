@@ -1,8 +1,50 @@
 "use client"
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const MissionSection = () => {
+  const textRef = useRef(null);
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Text animation
+    gsap.fromTo(textRef.current,
+      {
+        opacity: 0,
+        x: -50
+      },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: "top 80%",
+        }
+      }
+    );
+
+    // Image animation
+    gsap.fromTo(imageRef.current,
+      {
+        opacity: 0,
+        x: 50
+      },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: imageRef.current,
+          start: "top 80%",
+        }
+      }
+    );
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-green-800 to-green-600 text-white py-8 px-6 flex flex-col md:flex-row items-center md:justify-between">
       {/* Animated Background Waves */}
@@ -12,11 +54,9 @@ const MissionSection = () => {
       </div>
 
       {/* Text Content */}
-      <motion.div 
+      <div 
+        ref={textRef}
         className="relative z-10 max-w-md text-center md:text-left"
-        initial={{ opacity: 0, x: -50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
       >
         <h2 className="text-orange-400 text-sm font-semibold mb-2">Our Mission</h2>
         <h1 className="text-2xl font-bold mb-3">Implementation of Agentic AI in Exams</h1>
@@ -25,21 +65,19 @@ const MissionSection = () => {
           adaptive exams that enhance efficiency, fairness, and student success through
           automated exam creation, grading, and feedback.
         </p>
-      </motion.div>
+      </div>
 
       {/* Image */}
-      <motion.div 
+      <div 
+        ref={imageRef}
         className="relative z-10 mt-6 md:mt-0 md:ml-8 flex-shrink-0"
-        initial={{ opacity: 0, x: 50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
       >
         <img
           src="/mission.png"
           alt="Illustrative image"
           className="w-full max-w-sm h-auto object-contain hover:scale-105 transition-transform duration-300"
         />
-      </motion.div>
+      </div>
 
       {/* Inline CSS */}
       <style jsx>{`

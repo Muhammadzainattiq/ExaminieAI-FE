@@ -1,16 +1,18 @@
 "use client";
 import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FaUser, FaUpload, FaCog, FaLaptop, FaCheckCircle, FaArrowRight } from 'react-icons/fa'; // Added FaArrowRight for arrows
+import { FaUser, FaUpload, FaCog, FaLaptop, FaCheckCircle, FaArrowRight } from 'react-icons/fa';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const HowItWorks = () => {
   const svgPathRef = useRef<SVGPathElement>(null);
+  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const iconsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
+    // Animate SVG path
     if (svgPathRef.current) {
       gsap.fromTo(
         svgPathRef.current,
@@ -28,6 +30,33 @@ const HowItWorks = () => {
         }
       );
     }
+
+    // Animate steps
+    stepsRef.current.forEach((step, index) => {
+      gsap.fromTo(step,
+        { scale: 0.8, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          scrollTrigger: {
+            trigger: step,
+            start: 'top 80%',
+            once: true
+          }
+        }
+      );
+    });
+
+    // Animate icons
+    iconsRef.current.forEach((icon) => {
+      gsap.to(icon, {
+        scale: 1.2,
+        duration: 0.5,
+        repeat: -1,
+        yoyo: true
+      });
+    });
   }, []);
 
   const steps = [
@@ -76,24 +105,19 @@ const HowItWorks = () => {
         <div className="flex gap-8 relative z-10 items-center">
           {steps.map((step, index) => (
             <div className="flex items-center" key={index}>
-              <motion.div
+              <div
+                ref={el => stepsRef.current[index] = el}
                 className="flex flex-col items-center text-center p-4 bg-white shadow-md rounded-lg w-48"
-                initial={{ scale: 0.8, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
               >
-                <motion.div
+                <div
+                  ref={el => iconsRef.current[index] = el}
                   className="flex items-center justify-center w-12 h-12 rounded-full bg-green-500 text-white text-2xl font-bold mb-4"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1.2 }}
-                  transition={{ duration: 0.5, yoyo: Infinity }}
                 >
                   {step.icon}
-                </motion.div>
+                </div>
                 <h3 className="text-xl font-semibold text-gray-700">{step.title}</h3>
                 <p className="text-gray-500">{step.description}</p>
-              </motion.div>
+              </div>
 
               {/* Add arrow icon except for the last item */}
               {index < steps.length - 1 && (
