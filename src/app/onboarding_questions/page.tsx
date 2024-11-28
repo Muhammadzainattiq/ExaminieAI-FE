@@ -14,23 +14,11 @@ import {
   FaMedal,
 } from "react-icons/fa";
 
-const countryOptions = [
-    "United States",
-    "India",
-    "United Kingdom",
-    "Canada",
-    "Australia",
-    "Germany",
-    "France",
-    "Other",
-  ];
-  
-
 const questions = [
   {
     id: "age",
     question: "What is your age group?",
-    options: ["10", "19", "20", "21"],
+    options: ["Under 10", "10-15", "16-20", "21+"],
     icons: [<FaUserGraduate />, "🎉", "🎓", "🏆"],
   },
   {
@@ -130,35 +118,27 @@ const Onboarding = () => {
     }
 
     setIsSubmitting(true);
-
     try {
-      // Send all answers to the backend
       const response = await fetch(
-        "https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/onboarding/add_onboarding_question/",
+        "https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/student/create_profile/",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify(
-            Object.entries(answers).map(([question, answer]) => ({
-              question,
-              answer,
-            }))
-          ),
+          body: JSON.stringify(answers),
         }
       );
 
       if (response.ok) {
-        alert("Onboarding questions submitted successfully!");
+        alert("Profile created successfully!");
       } else {
-        const errorData = await response.json();
-        alert(`Failed to submit questions: ${errorData.detail || "Unknown error"}`);
+        alert("Failed to submit profile!");
       }
     } catch (error) {
-      console.error("Error submitting questions:", error);
-      alert("An error occurred while submitting your responses.");
+      console.error("Error submitting profile:", error);
+      alert("An error occurred!");
     } finally {
       setIsSubmitting(false);
     }
@@ -167,7 +147,7 @@ const Onboarding = () => {
   return (
     <div className="min-h-screen bg-green-50 flex flex-col items-center justify-center">
       {/* Heading */}
-      <h1 className="text-4xl font-bold text-green-600 mb-8 animate-none">
+      <h1 className="text-4xl font-bold text-green-600 mb-8 animate-bounce">
         Let's take some quick questions!
       </h1>
 
