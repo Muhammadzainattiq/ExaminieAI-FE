@@ -6,7 +6,6 @@ import InteractiveDemo from "./components/Landing Page/video";
 import MissionSection from "./components/Landing Page/MissionSection";
 import FAQSection from "./components/Landing Page/Faqs";
 import CTASection from "./components/Landing Page/cta";
-import HeroSection from "./components/Landing Page/hero";
 
 import Footer from "./components/Landing Page/footer"; 
 export default function Home() {
@@ -20,7 +19,6 @@ export default function Home() {
     <InteractiveDemo/>
     <FAQSection/>
     <CTASection/>  
-    <Footer/>
      
    
 
