@@ -1,8 +1,7 @@
 "use client";
 import { NextPage } from "next";
 import { TypeAnimation } from "react-type-animation";
-import React, { useState, useEffect, useRef } from "react";
-import gsap from "gsap";
+import React, { useState, useEffect } from "react";
 
 const styles = `
   @keyframes float {
@@ -55,10 +54,6 @@ const styles = `
 const Home: NextPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const navRef = useRef(null);
-  const bgImageRef = useRef(null);
-  const contentRef = useRef(null);
-  const menuRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,47 +62,6 @@ const Home: NextPage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  useEffect(() => {
-    // Initial animations
-    gsap.fromTo(navRef.current,
-      { y: -100 },
-      { y: 0, duration: 0.5 }
-    );
-
-    gsap.fromTo(bgImageRef.current,
-      { opacity: 0 },
-      { opacity: 0.6, duration: 1.5 }
-    );
-
-    gsap.fromTo(contentRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 1 }
-    );
-  }, []);
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      gsap.fromTo(menuRef.current,
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.2 }
-      );
-    }
-  }, [isMenuOpen]);
-
-  const handleHover = (element: HTMLElement) => {
-    gsap.to(element, {
-      scale: 1.05,
-      duration: 0.2
-    });
-  };
-
-  const handleHoverExit = (element: HTMLElement) => {
-    gsap.to(element, {
-      scale: 1,
-      duration: 0.2
-    });
-  };
 
   return (
     <div className="relative text-white min-h-screen">
@@ -121,27 +75,22 @@ const Home: NextPage = () => {
 
       {/* Background Image with Dynamic Blur and Overlay */}
       <div
-        ref={bgImageRef}
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fEVkdWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D')"
+          backgroundImage: "url('https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fEVkdWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D')",
+          opacity: 0.6
         }}
       ></div>
       <div className="absolute inset-0 bg-black opacity-60 backdrop-blur-sm"></div>
 
       {/* Navbar */}
       <nav 
-        ref={navRef}
-        className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-green-900/90 backdrop-blur-md' : 'bg-transparent'}`}
+        className={`fixed w-full z-50 transition-all duration-300 transform ${scrolled ? 'bg-green-900/90 backdrop-blur-md' : 'bg-transparent'}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              <div 
-                className="flex-shrink-0 flex items-center"
-                onMouseEnter={(e) => handleHover(e.currentTarget)}
-                onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
-              >
+              <div className="flex-shrink-0 flex items-center transition-transform duration-200 hover:scale-105">
                 <img className="h-10 w-10" src="https://cdn-icons-png.flaticon.com/128/23/23358.png" alt="Logo" />
                 <span className="ml-2 text-xl font-bold bg-gradient-to-r from-green-300 to-green-100 bg-clip-text text-transparent">
                   ExaminAI
@@ -153,9 +102,7 @@ const Home: NextPage = () => {
                     <a
                       key={item}
                       href="#"
-                      className="text-white hover:bg-green-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                      onMouseEnter={(e) => handleHover(e.currentTarget)}
-                      onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
+                      className="text-white hover:bg-green-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105"
                     >
                       {item}
                     </a>
@@ -164,12 +111,8 @@ const Home: NextPage = () => {
               </div>
             </div>
             <div className="hidden md:block">
-              <div 
-                className="ml-4 flex items-center md:ml-6"
-                onMouseEnter={(e) => handleHover(e.currentTarget)}
-                onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
-              >
-                <button className="bg-green-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50">
+              <div className="ml-4 flex items-center md:ml-6">
+                <button onClick={() => window.location.href = '/Login'} className="bg-green-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                   Login
                 </button>
               </div>
@@ -177,7 +120,7 @@ const Home: NextPage = () => {
             <div className="-mr-2 flex md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-green-500 focus:outline-none"
+                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-green-500 focus:outline-none transition-colors duration-200"
               >
                 <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                   {isMenuOpen ? (
@@ -193,24 +136,18 @@ const Home: NextPage = () => {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div ref={menuRef} className="md:hidden">
+          <div className="md:hidden transition-all duration-200 transform">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-green-900/90 backdrop-blur-md">
               {["Home", "About", "Features", "Contact"].map((item) => (
                 <a
                   key={item}
                   href="#"
-                  className="text-white hover:bg-green-500 block px-3 py-2 rounded-md text-base font-medium"
-                  onMouseEnter={(e) => handleHover(e.currentTarget)}
-                  onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
+                  className="text-white hover:bg-green-500 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
                 >
                   {item}
                 </a>
               ))}
-              <button 
-                className="w-full text-center bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600"
-                onMouseEnter={(e) => handleHover(e.currentTarget)}
-                onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
-              >
+              <button className="w-full text-center bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-colors duration-200">
                 Login
               </button>
             </div>
@@ -219,7 +156,7 @@ const Home: NextPage = () => {
       </nav>
 
       {/* Main Content */}
-      <div ref={contentRef} className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between relative z-10 max-w-6xl pt-20">
+      <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between relative z-10 max-w-6xl pt-20">
         {/* Text Section */}
         <div className="text-center lg:text-left max-w-3xl animate-fadeIn">
           <h1 className="text-4xl lg:text-6xl font-extrabold leading-snug tracking-tight">
@@ -244,18 +181,10 @@ const Home: NextPage = () => {
           </p>
 
           <div className="mt-8 flex justify-center lg:justify-start gap-4">
-            <button 
-              className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50"
-              onMouseEnter={(e) => handleHover(e.currentTarget)}
-              onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
-            >
+            <button className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
               Signup As Student
             </button>
-            <button 
-              className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50"
-              onMouseEnter={(e) => handleHover(e.currentTarget)}
-              onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
-            >
+            <button className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
               Signup As Teacher
             </button>
           </div>
@@ -277,9 +206,7 @@ const Home: NextPage = () => {
           <img
             src="/asd.png"
             alt="Illustration of ExaminieAI"
-            className="h-auto max-w-sm rounded-lg shadow-lg relative z-10"
-            onMouseEnter={(e) => handleHover(e.currentTarget)}
-            onMouseLeave={(e) => handleHoverExit(e.currentTarget)}
+            className="h-auto max-w-sm rounded-lg shadow-lg relative z-10 transition-transform duration-200 hover:scale-105"
           />
         </div>
       </div>

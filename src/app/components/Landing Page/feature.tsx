@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import Tilt from 'react-parallax-tilt';
-import gsap from 'gsap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGraduate, faChalkboardTeacher, faFileAlt, faUserCog, faSlidersH, faRobot, faChartLine } from '@fortawesome/free-solid-svg-icons';
 
 const FeatureSection = () => {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  const featuresRef = useRef(null);
 
   const features = [
     {
@@ -50,30 +48,13 @@ const FeatureSection = () => {
 
   const displayedFeatures = showAllFeatures ? features : features.slice(0, 3);
 
-  useEffect(() => {
-    // Initial animation for features
-    gsap.fromTo(
-      featuresRef.current.children,
-      {
-        opacity: 0,
-        y: 20
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        stagger: 0.2
-      }
-    );
-  }, [showAllFeatures]);
-
   return (
     <section className="p-10 text-center bg-gray-100">
       <h2 className="text-3xl font-bold mb-8 text-black">Dynamic Features</h2>
       <p className="text-lg mb-6 text-black">Our sales team will get in touch to better understand your needs, and either help you with the sign-up process.</p>
       
       {/* Feature Cards */}
-      <div ref={featuresRef} className="flex flex-wrap gap-6 justify-center">
+      <div className="flex flex-wrap gap-6 justify-center">
         {displayedFeatures.map((feature, index) => (
           <Tilt
             key={index}
@@ -81,7 +62,10 @@ const FeatureSection = () => {
             tiltMaxAngleY={15}
             glareEnable={true}
             glareMaxOpacity={0.3}
-            className="w-full sm:w-80 h-60 bg-opacity-10 bg-gray-200 rounded-lg shadow-lg p-6 hover:bg-green-200 transition-all backdrop-blur-md"
+            className={`w-full sm:w-80 h-60 bg-opacity-10 bg-gray-200 rounded-lg shadow-lg p-6 hover:bg-green-200 transition-all backdrop-blur-md transform opacity-0 translate-y-4 animate-[fadeIn_0.5s_ease-out_forwards] duration-500`}
+            style={{
+              animationDelay: `${index * 200}ms`
+            }}
           >
             <div className="relative w-full h-full rounded-lg overflow-hidden">
               {/* Icon */}
