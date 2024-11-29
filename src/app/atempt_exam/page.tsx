@@ -37,6 +37,8 @@ const AttemptExamPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(0); // Timer in seconds
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
 
   const fetchExamDetails = async () => {
     const examId = localStorage.getItem("exam-id");
@@ -61,11 +63,13 @@ const AttemptExamPage = () => {
 
       if (!response.ok) {
         const errorResponse = await response.json();
+        console.log("Error fetching exam details:", errorResponse);
         setError(`Failed to fetch exam details: ${errorResponse.message}`);
         return;
       }
 
       const data = await response.json();
+      console.log("Exam details response:", data);
       setExamDetails(data);
 
       // Initialize answers array
@@ -75,6 +79,7 @@ const AttemptExamPage = () => {
       }));
       setAnswers(initialAnswers);
     } catch (err) {
+      console.error("Error fetching exam details:", err);
       setError("An error occurred while fetching exam details.");
     } finally {
       setLoading(false);
@@ -102,20 +107,24 @@ const AttemptExamPage = () => {
         }
       );
 
+      const responseData = await response.json();
+      console.log("Start exam attempt response:", responseData);
+
       if (!response.ok) {
-        const errorResponse = await response.json();
-        setError(`Failed to start the exam: ${errorResponse.message}`);
+        setError(`Failed to start the exam: ${responseData.message}`);
         return;
       }
 
       setAttemptStarted(true);
       setTimeLeft((examDetails?.time_limit || 0) * 60); // Convert minutes to seconds for timer
     } catch (err) {
+      console.error("Error starting exam:", err);
       setError("An error occurred while starting the exam.");
     }
   };
 
   const handleOptionSelect = (questionId: string, selectedOption: string) => {
+    console.log("Selected option for question", questionId, ":", selectedOption);
     setAnswers((prevAnswers) =>
       prevAnswers.map((answer) =>
         answer.question_id === questionId
@@ -126,6 +135,8 @@ const AttemptExamPage = () => {
   };
 
   const submitAllAnswers = async () => {
+    if (isSubmitting) return; // Prevent multiple submissions
+    
     const examId = localStorage.getItem("exam-id");
     const accessToken = localStorage.getItem("access_token");
 
@@ -133,6 +144,8 @@ const AttemptExamPage = () => {
       setError("Missing exam ID or access token.");
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const response = await fetch(
@@ -147,16 +160,26 @@ const AttemptExamPage = () => {
         }
       );
 
+      const responseData = await response.json();
+      console.log("Submit answers response:", responseData);
+
       if (!response.ok) {
-        const errorResponse = await response.json();
-        setError(`Failed to submit answers: ${errorResponse.message}`);
+        if (response.status === 409) {
+          console.log("Exam already submitted");
+          setError("You have already submitted this exam.");
+        } else {
+          setError(`Failed to submit answers: ${responseData.message}`);
+        }
         return;
       }
 
-      alert("Exam submitted successfully!");
-      // Redirect or handle post-submit actions
+      console.log("Exam submitted successfully");
+      setSubmitSuccess(true);
     } catch (err) {
+      console.error("Error submitting answers:", err);
       setError("An error occurred while submitting answers.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -169,7 +192,7 @@ const AttemptExamPage = () => {
     if (timeLeft > 0 && attemptStarted) {
       timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     } else if (timeLeft === 0 && attemptStarted) {
-      alert("Time is up!");
+      console.log("Time is up - auto submitting exam");
       submitAllAnswers();
     }
     return () => clearInterval(timer);
@@ -187,6 +210,24 @@ const AttemptExamPage = () => {
 
   if (error) {
     return <p className="text-red-500">{error}</p>;
+  }
+
+  if (submitSuccess) {
+    return (
+      <div className="bg-green-50 min-h-screen flex flex-col items-center justify-center">
+        <div className="bg-white shadow-lg rounded-lg p-8 text-center">
+          <div className="text-green-600 text-5xl mb-4">✓</div>
+          <h2 className="text-2xl font-bold text-green-800 mb-4">Exam Submitted Successfully!</h2>
+          <p className="text-gray-600 mb-6">Thank you for completing the exam. Your responses have been recorded.</p>
+          <button
+            onClick={() => window.location.href = '/DashBoard'}
+            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -258,10 +299,13 @@ const AttemptExamPage = () => {
               </button>
               {currentQuestionIndex === (examDetails?.num_questions || 1) - 1 ? (
                 <button
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                  className={`bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 ${
+                    isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                   onClick={submitAllAnswers}
+                  disabled={isSubmitting}
                 >
-                  Submit
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
               ) : (
                 <button
