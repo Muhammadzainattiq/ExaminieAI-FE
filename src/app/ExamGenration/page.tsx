@@ -61,6 +61,9 @@ const ExamGenerationAndConfirmationPage = () => {
       
       setMessage({text: 'Exam generated successfully!', type: 'success'});
 
+      // Redirect to attempt exam page after successful generation
+      router.push('/attempt_exam');
+
     } catch (error) {
       console.error('Error generating exam:', error);
       setMessage({text: 'Failed to generate exam. Please try again.', type: 'error'});
