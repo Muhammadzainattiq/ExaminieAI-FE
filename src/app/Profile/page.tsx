@@ -1,8 +1,8 @@
 'use client'
-import { motion } from 'framer-motion';
 import { FaUser, FaGraduationCap, FaBriefcase } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Sidebar from '../components/SiderBar/page';
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -79,14 +79,10 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex">
+      <Sidebar />
       {/* Main Content */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="p-8"
-      >
+      <div className="flex-1 p-8 lg:ml-60 transform transition-all duration-500 ease-in-out translate-y-0 opacity-100">
         {/* Profile Header */}
         <div className="flex items-center gap-6 bg-white rounded-lg shadow-md p-6">
           <div className="h-20 w-20 rounded-full bg-green-600 flex items-center justify-center text-2xl font-bold text-white">
@@ -128,7 +124,7 @@ const ProfilePage = () => {
             <DetailItem label="Decision Making" value={profileData.decision_making_approach} />
           </DetailCard>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
