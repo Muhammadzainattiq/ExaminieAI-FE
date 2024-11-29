@@ -42,14 +42,14 @@ const AttemptExamPage = () => {
     const examId = localStorage.getItem("exam-id");
     const accessToken = localStorage.getItem("access_token");
 
-    // if (!examId || !accessToken) {
-    //   setError("Missing exam ID or access token.");
-    //   return;
-    // }
+    if (!examId || !accessToken) {
+      setError("Missing exam ID or access token.");
+      return;
+    }
 
     try {
       const response = await fetch(
-        `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/get_full_exam/7f25eb03-e52b-4257-b1df-b80bb014fbff`,
+        `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/get_full_exam/${examId}`,
         {
           method: "GET",
           headers: {
@@ -59,11 +59,11 @@ const AttemptExamPage = () => {
         }
       );
 
-      // if (!response.ok) {
-      //   const errorResponse = await response.json();
-      //   setError(`Failed to fetch exam details: ${errorResponse.message}`);
-      //   return;
-      // }
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        setError(`Failed to fetch exam details: ${errorResponse.message}`);
+        return;
+      }
 
       const data = await response.json();
       setExamDetails(data);
@@ -85,14 +85,14 @@ const AttemptExamPage = () => {
     const examId = localStorage.getItem("exam-id");
     const accessToken = localStorage.getItem("access_token");
 
-    // if (!examId || !accessToken) {
-    //   setError("Missing exam ID or access token.");
-    //   return;
-    // }
+    if (!examId || !accessToken) {
+      setError("Missing exam ID or access token.");
+      return;
+    }
 
     try {
       const response = await fetch(
-        `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/start_exam_attempt/7f25eb03-e52b-4257-b1df-b80bb014fbff/`,
+        `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/start_exam_attempt/${examId}/`,
         {
           method: "POST",
           headers: {
@@ -102,11 +102,11 @@ const AttemptExamPage = () => {
         }
       );
 
-      // if (!response.ok) {
-      //   const errorResponse = await response.json();
-      //   setError(`Failed to start the exam: ${errorResponse.message}`);
-      //   return;
-      // }
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        setError(`Failed to start the exam: ${errorResponse.message}`);
+        return;
+      }
 
       setAttemptStarted(true);
       setTimeLeft((examDetails?.time_limit || 0) * 60); // Convert minutes to seconds for timer
@@ -129,14 +129,14 @@ const AttemptExamPage = () => {
     const examId = localStorage.getItem("exam-id");
     const accessToken = localStorage.getItem("access_token");
 
-    // if (!examId || !accessToken) {
-    //   setError("Missing exam ID or access token.");
-    //   return;
-    // }
+    if (!examId || !accessToken) {
+      setError("Missing exam ID or access token.");
+      return;
+    }
 
     try {
       const response = await fetch(
-        `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/submit_all_answers/7f25eb03-e52b-4257-b1df-b80bb014fbff/`,
+        `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/submit_all_answers/${examId}/`,
         {
           method: "POST",
           headers: {
@@ -147,11 +147,11 @@ const AttemptExamPage = () => {
         }
       );
 
-      // if (!response.ok) {
-      //   const errorResponse = await response.json();
-      //   setError(`Failed to submit answers: ${errorResponse.message}`);
-      //   return;
-      // }
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        setError(`Failed to submit answers: ${errorResponse.message}`);
+        return;
+      }
 
       alert("Exam submitted successfully!");
       // Redirect or handle post-submit actions
