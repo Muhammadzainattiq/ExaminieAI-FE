@@ -99,9 +99,8 @@ const ExamList = () => {
   const menuItems = [
     { icon: <FaBookOpen className="w-6 h-6" />, label: 'Dashboard', href: '/' },
     { icon: <FaUpload className="w-6 h-6" />, label: 'Upload Content', href: '/ContentUpload' },
-    { icon: <FaPencilAlt className="w-6 h-6" />, label: 'Generate Exam', href: '/generate' },
-    { icon: <FaChartBar className="w-6 h-6" />, label: 'Analytics', href: '/analytics' },
-    { icon: <FaUser className="w-6 h-6" />, label: 'Profile', href: '/profile' },
+    { icon: <FaPencilAlt className="w-6 h-6" />, label: 'Generate Exam', href: '/ContentUpload' },
+    { icon: <FaUser className="w-6 h-6" />, label: 'Profile', href: '/Profile' },
   ];
 
   // Process exam results for charts
@@ -111,23 +110,19 @@ const ExamList = () => {
     .reverse()
     .map(exam => ({
       name: exam.exam_title,
-      marks: exam.total_marks
+      percentage: exam.percentage,
+      grade: exam.grade
     }));
 
   const performanceData = allExamResults.map(exam => ({
     name: exam.exam_title,
-    marks: exam.total_marks,
+    percentage: exam.percentage,
     grade: exam.grade
   }));
 
   const passFailData = [
     { name: 'Pass', value: progressData.exams_passed },
     { name: 'Fail', value: progressData.exams_failed }
-  ];
-
-  const scoreDistributionData = [
-    { name: 'Obtained', value: latestExamResult.percentage },
-    { name: 'Remaining', value: 100 - latestExamResult.percentage }
   ];
 
   const COLORS = ['#4CAF50', '#FF5252'];
@@ -278,8 +273,9 @@ const ExamList = () => {
 
         {/* Charts Section */}
         <div className="space-y-8">
-          {/* Pass/Fail Ratio */}
+          {/* Pass/Fail Ratio and Latest Exam Result */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Pass/Fail Ratio */}
             <div className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Pass/Fail Ratio</h3>
               <div className="h-64">
@@ -313,73 +309,16 @@ const ExamList = () => {
               </div>
             </div>
 
-            {/* Last 10 Exams Total Marks */}
+            {/* Latest Exam Result Card */}
             <div className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Last 10 Exams Total Marks</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={lastTenExams}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="marks" stroke="#4CAF50" name="Total Marks" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-
-          {/* Latest Exam Result Card with Performance Graph */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Score Distribution */}
-            <div className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Score Distribution</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={scoreDistributionData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      paddingAngle={5}
-                      dataKey="value"
-                      onMouseEnter={onPieEnter}
-                      onMouseLeave={onPieLeave}
-                      activeShape={renderActiveShape}
-                      label={({ name: value }) => `${name}: ${value}%`}
-                    >
-                      {scoreDistributionData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={COLORS[index % COLORS.length]}
-                          className="transition-transform duration-300"
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => `${value}%`} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Latest Exam Details */}
-            <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Latest Exam Result</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h4 className="text-lg font-medium text-gray-700">{latestExamResult.exam_title}</h4>
-                  <div className="space-y-2">
-                    <p><span className="font-medium">Total Marks:</span> {latestExamResult.total_marks}</p>
-                    <p><span className="font-medium">Obtained Marks:</span> {latestExamResult.obtained_marks}</p>
-                    <p><span className="font-medium">Grade:</span> {latestExamResult.grade}</p>
-                    <p><span className="font-medium">Percentage:</span> {latestExamResult.percentage}%</p>
-                  </div>
+              <div className="space-y-4">
+                <h4 className="text-lg font-medium text-gray-700">{latestExamResult.exam_title}</h4>
+                <div className="space-y-2">
+                  <p><span className="font-medium">Total Marks:</span> {latestExamResult.total_marks}</p>
+                  <p><span className="font-medium">Obtained Marks:</span> {latestExamResult.obtained_marks}</p>
+                  <p><span className="font-medium">Grade:</span> {latestExamResult.grade}</p>
+                  <p><span className="font-medium">Percentage:</span> {latestExamResult.percentage}%</p>
                 </div>
               </div>
             </div>
@@ -390,16 +329,32 @@ const ExamList = () => {
             <h3 className="text-xl font-semibold text-gray-800 mb-4">All Exams Performance Overview</h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={performanceData}>
+                <LineChart data={performanceData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="left" domain={[0, 100]} />
                   <YAxis yAxisId="right" orientation="right" />
                   <Tooltip />
                   <Legend />
-                  <Area yAxisId="left" type="monotone" dataKey="marks" stroke="#4CAF50" fill="#4CAF50" fillOpacity={0.3} name="Total Marks" />
-                  <Line yAxisId="right" type="monotone" dataKey="grade" stroke="#2196F3" name="Grade" />
-                </AreaChart>
+                  <Line 
+                    yAxisId="left" 
+                    type="monotone" 
+                    dataKey="percentage" 
+                    stroke="#4CAF50" 
+                    name="Percentage" 
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 8 }}
+                  />
+                  <Line 
+                    yAxisId="right" 
+                    type="monotone" 
+                    dataKey="grade" 
+                    stroke="#2196F3" 
+                    name="Grade"
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
