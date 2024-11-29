@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import YouTubeLinkPad from "../components/content/youtube";
 import ArticleSubmissionPage from "../components/content/article"; 
 import TextPad from "../components/content/freetext";
@@ -9,6 +10,7 @@ import ContentUpload from "../components/content/sixcard";
 import Sidebar from "../components/SiderBar/page";
 
 const ExamContentUpload: React.FC = () => {
+  const router = useRouter();
   const [selectedContentType, setSelectedContentType] = useState<string | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +36,12 @@ const ExamContentUpload: React.FC = () => {
   const handleCloseMinimizedPage = () => {
     setIsMinimized(false);
     setSelectedContentType(null);
+  };
+
+  const handleNext = () => {
+    if (selectedContentType) {
+      router.push('/examtype'); // Navigate to exam type page
+    }
   };
 
   const renderSelectedPage = () => {
@@ -76,6 +84,22 @@ const ExamContentUpload: React.FC = () => {
                 ))}
               </div>
               <ContentUpload />
+              {selectedContentType && (
+                <div className="flex justify-center gap-4 mt-6">
+                  <button
+                    onClick={handleNext}
+                    className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-lg"
+                  >
+                    Next
+                  </button>
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="px-8 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 shadow-lg"
+                  >
+                    Back to Dashboard
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
