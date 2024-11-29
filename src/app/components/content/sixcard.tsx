@@ -24,7 +24,7 @@ const ContentUpload: React.FC = () => {
   ];
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       console.error('Authentication token not found');
       return;

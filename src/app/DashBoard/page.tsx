@@ -351,7 +351,7 @@ const ExamList = () => {
                       onMouseEnter={onPieEnter}
                       onMouseLeave={onPieLeave}
                       activeShape={renderActiveShape}
-                      label={({ name, value }) => `${name}: ${value}%`}
+                      label={({ name:, value }) => `${name}: ${value}%`}
                     >
                       {scoreDistributionData.map((entry, index) => (
                         <Cell 
