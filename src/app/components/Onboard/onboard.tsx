@@ -23,6 +23,7 @@ ChartJS.register(
   Legend
 );
 
+
 export default function Dashboard() {
   // Data for Visitors Analytics Pie Chart
   const visitorsData = {
@@ -229,9 +230,13 @@ export default function Dashboard() {
     </div>
   );
 }
-
+interface CardProps {
+  title: string;
+  value: string;
+  percentage: string;
+}
 // Reusable Card Component
-function Card({ title, value, percentage }) {
+function Card({ title, value, percentage }:CardProps) {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md">
       <h4 className="text-sm font-medium text-gray-600">{title}</h4>
