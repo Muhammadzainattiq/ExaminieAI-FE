@@ -7,7 +7,8 @@ import { FaUser, FaUpload, FaCog, FaLaptop, FaCheckCircle, FaArrowRight } from '
 gsap.registerPlugin(ScrollTrigger);
 
 const HowItWorks = () => {
-  const svgPathRef = useRef<SVGPathElement>(null);
+  // Corrected type for svgPathRef and stepsRef/iconsRef
+  const svgPathRef = useRef<SVGPathElement | null>(null);
   const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
   const iconsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -106,11 +107,11 @@ const HowItWorks = () => {
           {steps.map((step, index) => (
             <div className="flex items-center" key={index}>
               <div
-                ref={el => stepsRef.current[index] = el}
+                ref={(el) => { stepsRef.current[index] = el; }}
                 className="flex flex-col items-center text-center p-4 bg-white shadow-md rounded-lg w-48"
               >
                 <div
-                  ref={el => iconsRef.current[index] = el}
+                  ref={(el) => { iconsRef.current[index] = el; }}
                   className="flex items-center justify-center w-12 h-12 rounded-full bg-green-500 text-white text-2xl font-bold mb-4"
                 >
                   {step.icon}

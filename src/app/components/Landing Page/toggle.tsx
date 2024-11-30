@@ -1,71 +1,75 @@
 "use client";
+
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faBook, faChalkboard, faUserGraduate, faChalkboardTeacher } from "@fortawesome/free-solid-svg-icons";
 
-const BenefitsCard = ({
-  title,
-  benefits,
-  icon,
-  hoverIcon,
-  hoverText
-}: {
+type BenefitsCardProps = {
   title: string;
   benefits: string[];
-  icon: any;
-  hoverIcon: any;
+  icon: IconDefinition;
+  hoverIcon: IconDefinition;
   hoverText: string;
-}) => {
-  const cardRef = useRef(null);
-  const iconRef = useRef(null);
-  const hoverTextRef = useRef(null);
+};
+
+const BenefitsCard = ({ title, benefits, icon, hoverIcon, hoverText }: BenefitsCardProps) => {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const iconRef = useRef<HTMLDivElement | null>(null);
+  const hoverTextRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!cardRef.current || !iconRef.current || !hoverTextRef.current) return;
+
     // Initial animation
-    gsap.fromTo(cardRef.current,
+    gsap.fromTo(
+      cardRef.current,
       { opacity: 0, x: 50 },
       { opacity: 1, x: 0, duration: 0.5 }
     );
 
     // Animate list items
-    const listItems = cardRef.current.querySelectorAll('li');
+    const listItems = cardRef.current.querySelectorAll("li");
     listItems.forEach((item, index) => {
-      gsap.fromTo(item,
+      gsap.fromTo(
+        item,
         { opacity: 0 },
         { opacity: 1, duration: 0.3, delay: 0.2 * index }
       );
     });
 
     // Setup hover animations for icon
-    iconRef.current.addEventListener('mouseenter', () => {
-      gsap.to(iconRef.current, {
+    const iconElement = iconRef.current;
+    iconElement.addEventListener("mouseenter", () => {
+      gsap.to(iconElement, {
         scale: 1.2,
         rotation: 10,
-        duration: 0.3
+        duration: 0.3,
       });
     });
 
-    iconRef.current.addEventListener('mouseleave', () => {
-      gsap.to(iconRef.current, {
+    iconElement.addEventListener("mouseleave", () => {
+      gsap.to(iconElement, {
         scale: 1,
         rotation: 0,
-        duration: 0.3
+        duration: 0.3,
       });
     });
 
     // Setup hover text animation
-    hoverTextRef.current.addEventListener('mouseenter', () => {
-      gsap.to(hoverTextRef.current, {
+    const hoverTextElement = hoverTextRef.current;
+    hoverTextElement.addEventListener("mouseenter", () => {
+      gsap.to(hoverTextElement, {
         opacity: 1,
-        duration: 0.3
+        duration: 0.3,
       });
     });
 
-    hoverTextRef.current.addEventListener('mouseleave', () => {
-      gsap.to(hoverTextRef.current, {
+    hoverTextElement.addEventListener("mouseleave", () => {
+      gsap.to(hoverTextElement, {
         opacity: 0,
-        duration: 0.3
+        duration: 0.3,
       });
     });
   }, []);
@@ -80,15 +84,13 @@ const BenefitsCard = ({
           ref={iconRef}
           className="w-12 h-12 flex items-center justify-center rounded-full bg-green-500 text-white transition-transform duration-300"
         >
-          <FontAwesomeIcon icon={hoverIcon} size="lg" />
+          <FontAwesomeIcon icon={icon} size="lg" />
         </div>
         <h3 className="text-2xl font-semibold text-green-600">{title}</h3>
       </div>
       <ul className="list-disc pl-6 space-y-3 text-gray-700">
         {benefits.map((benefit, index) => (
-          <li key={index}>
-            {benefit}
-          </li>
+          <li key={index}>{benefit}</li>
         ))}
       </ul>
 
@@ -106,7 +108,7 @@ const BenefitsCard = ({
 const RoleCards = () => {
   const studentBenefits = [
     "Access to personalized learning resources",
-    "Interactive study materials and practice tests", 
+    "Interactive study materials and practice tests",
     "Time management tips and productivity tools",
     "Peer collaborations and study groups",
   ];
@@ -114,17 +116,18 @@ const RoleCards = () => {
   const teacherBenefits = [
     "AI-powered insights into student performance",
     "Customizable lesson plans and teaching tools",
-    "Access to a variety of teaching resources", 
+    "Access to a variety of teaching resources",
     "Ability to track student progress and feedback",
   ];
 
   return (
     <div className="flex flex-col items-center gap-8 py-10 px-5 bg-gray-50 h-full">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">Benefits for Students & Teachers</h2>
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">
+        Benefits for Students & Teachers
+      </h2>
 
-      {/* Cards for Student and Teacher */}
+      {/* Cards for Students and Teachers */}
       <div className="flex flex-wrap gap-8 justify-center">
-        {/* Student Benefits Card */}
         <BenefitsCard
           title="Benefits for Students"
           benefits={studentBenefits}
@@ -132,8 +135,6 @@ const RoleCards = () => {
           hoverIcon={faBook}
           hoverText="Unlock your learning potential with personalized resources."
         />
-
-        {/* Teacher Benefits Card */}
         <BenefitsCard
           title="Benefits for Teachers"
           benefits={teacherBenefits}
