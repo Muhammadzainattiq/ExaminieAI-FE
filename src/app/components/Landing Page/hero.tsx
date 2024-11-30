@@ -183,7 +183,7 @@ const Home: NextPage = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between relative z-10 max-w-6xl pt-20">
         {/* Text Section */}
-        <div className="text-center lg:text-left max-w-3xl animate-fadeIn">
+        <div className="text-center lg:text-left max-w-3xl animate-fadeIn mt-16">
           <h1 className="text-4xl lg:text-6xl font-extrabold leading-snug tracking-tight">
             Revolutionize Exam Generation & Grading with ExaminieAI
           </h1>
