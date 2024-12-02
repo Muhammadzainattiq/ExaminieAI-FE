@@ -93,7 +93,7 @@ const ExamContentUpload: React.FC = () => {
                     Next
                   </button>
                   <button
-                    onClick={() => router.push('/dashboard')}
+                    onClick={() => router.push('/DashBoard')}
                     className="px-8 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 shadow-lg"
                   >
                     Back to Dashboard

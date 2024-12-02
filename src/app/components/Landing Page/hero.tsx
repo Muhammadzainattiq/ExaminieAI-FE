@@ -130,7 +130,7 @@ const Home: NextPage = () => {
                     <FaUser className="text-white" />
                   </button>
                 ) : (
-                  <button onClick={() => window.location.href = '/login'} className="bg-green-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
+                  <button onClick={() => window.location.href = '/Login'} className="bg-green-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                     Login
                   </button>
                 )}
@@ -183,7 +183,7 @@ const Home: NextPage = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between relative z-10 max-w-6xl pt-20">
         {/* Text Section */}
-        <div className="text-center lg:text-left max-w-3xl animate-fadeIn mt-16">
+        <div className="text-center lg:text-left max-w-3xl animate-fadeIn">
           <h1 className="text-4xl lg:text-6xl font-extrabold leading-snug tracking-tight">
             Revolutionize Exam Generation & Grading with ExaminieAI
           </h1>
@@ -196,15 +196,15 @@ const Home: NextPage = () => {
 
           <div className="mt-8 flex justify-center lg:justify-start gap-4">
             {isLoggedIn ? (
-              <button onClick={() => window.location.href = '/Dashboard'} className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
+              <button onClick={() => window.location.href = '/DashBoard'} className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                 Go to Dashboard
               </button>
             ) : (
               <>
-                <button className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
+                <button onClick={() => window.location.href = '/signup'} className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                   Signup As Student
                 </button>
-                <button className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
+                <button onClick={() => window.location.href = '/signup'}className="bg-green-500 text-white py-3 px-8 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                   Signup As Teacher
                 </button>
               </>
