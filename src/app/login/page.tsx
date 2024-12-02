@@ -38,7 +38,7 @@ export default function LoginPage() {
         setSuccessMessage("Login successful! Redirecting...");
         setTimeout(() => {
           setSuccessMessage(null);
-          router.push("/dashboard"); // Redirect to a dashboard or homepage
+          router.push("/DashBoard"); // Redirect to a dashboard or homepage
         }, 2000);
       } else {
         const errorData = await response.json();
@@ -152,7 +152,7 @@ export default function LoginPage() {
           <div className="text-center mt-6">
             <div className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <Link href="/signup">
+              <Link href="/SignUp">
                 <p className="font-medium text-lg text-green-700 hover:text-green-900">
                   Sign up
                 </p>

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const ContentUpload: React.FC = () => {
   const router = useRouter();
@@ -17,19 +17,19 @@ const ContentUpload: React.FC = () => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/content_upload";
 
   const contentTypes = [
-    { name: "PDFs", description: "Upload PDF files for question generation based on content.", icon: "📄", endpoint: "/upload_pdf/" },
-    { name: "DOCX", description: "Upload DOCX files to turn text-based content into questions.", icon: "📑", endpoint: "/upload_docx/" },
-    { name: "XLSX", description: "Upload Excel files for data-driven question generation.", icon: "📊", endpoint: "/upload_xlsx/" },
-    { name: "PPTX", description: "Upload PowerPoint files to create questions based on slides.", icon: "📊", endpoint: "/upload_pptx/" },
-    { name: "Image", description: "Upload images for visual question generation.", icon: "🖼", endpoint: "/upload_image/" },
-    { name: "Previous Exam (PDF, DOCX)", description: "Upload previous exam files for practice questions.", icon: "📝", endpoint: "/upload_exam/" },
+    { name: 'PDFs', description: 'Upload PDF files for question generation based on content.', icon: '📄', endpoint: '/upload_pdf/' },
+    { name: 'DOCX', description: 'Upload DOCX files to turn text-based content into questions.', icon: '📑', endpoint: '/upload_docx/' },
+    { name: 'XLSX', description: 'Upload Excel files for data-driven question generation.', icon: '📊', endpoint: '/upload_xlsx/' },
+    { name: 'PPTX', description: 'Upload PowerPoint files to create questions based on slides.', icon: '📊', endpoint: '/upload_pptx/' },
+    { name: 'Image', description: 'Upload images for visual question generation.', icon: '🖼', endpoint: '/upload_image/' },
+    { name: 'Previous Exam (PDF, DOCX)', description: 'Upload previous exam files for practice questions.', icon: '📝', endpoint: '/upload_exam/' },
   ];
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-
+    const token = localStorage.getItem('access_token');
+    
     if (!token) {
-      console.error("Authentication token not found");
+      console.error('Authentication token not found');
       return;
     }
 
@@ -38,36 +38,39 @@ const ContentUpload: React.FC = () => {
   }, []);
 
   const loadSelectedContents = () => {
-    const storedData = localStorage.getItem("selected_content_ids");
-    let selectedIds: string[] = [];
-
     try {
-      selectedIds = storedData ? JSON.parse(storedData) : [];
+      const selectedIds = JSON.parse(localStorage.getItem('selected_content_ids') || '[]');
+      const selectedItems = history.filter(item => selectedIds.includes(item.id));
+      setSelectedContents(selectedItems);
     } catch (error) {
-      console.error("Error parsing selected_content_ids from localStorage:", error);
+      console.error('Error parsing selected content IDs:', error);
+      // Reset to empty array if parsing fails
+      localStorage.setItem('selected_content_ids', '[]');
+      setSelectedContents([]);
     }
-
-    const selectedItems = history.filter((item) => selectedIds.includes(item.id));
-    setSelectedContents(selectedItems);
   };
 
   const fetchContentHistory = async (token: string) => {
     try {
-      const response = await fetch(`${baseUrl}/get_contents_by_student_id/`, {
-        method: "GET",
+      const response = await fetch(`https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/content_upload/get_contents_by_student_id/`, {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch content history");
+        throw new Error('Failed to fetch content history');
       }
 
       const data = await response.json();
       setHistory(data.contents || []);
+
     } catch (error) {
-      console.error("Error fetching content history:", error);
+      console.error('Error fetching content history:', error);
+      if (error instanceof Error) {
+        console.error(error.message);
+      }
     }
   };
 
@@ -85,96 +88,110 @@ const ContentUpload: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!selectedContentType || uploadedFiles.length === 0) {
-      console.error("Please select a content type and upload files");
+      console.error('Please select a content type and upload files');
       return;
     }
 
     setLoading(true);
 
     try {
-      const selectedType = contentTypes.find((type) => type.name === selectedContentType);
+      const selectedType = contentTypes.find(type => type.name === selectedContentType);
       if (!selectedType) return;
 
-      const token = localStorage.getItem("access_token");
-      if (!token) {
-        throw new Error("Authentication token not found");
+      let token;
+      try {
+        token = localStorage.getItem('auth_token');
+        if (!token) throw new Error('Authentication token not found');
+      } catch (e) {
+        throw new Error('Unable to access localStorage. Please ensure cookies are enabled.');
       }
 
       const formData = new FormData();
-      uploadedFiles.forEach((file) => {
-        formData.append("file", file);
-        formData.append("title", file.name);
+      uploadedFiles.forEach(file => {
+        formData.append('file', file);
+        formData.append('title', file.name);
       });
+      formData.append('auth_token', token);
 
       const response = await fetch(`${baseUrl}${selectedType.endpoint}`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`
         },
         body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || "Upload failed");
+        throw new Error(errorData?.message || 'Upload failed');
       }
 
       const data = await response.json();
-      console.log("Backend Response:", data);
+      console.log('Backend Response:', data);
 
       if (data.contents?.id) {
-        localStorage.setItem("selected_content_ids", JSON.stringify([data.contents.id]));
+        try {
+          localStorage.setItem('selected_content_ids', JSON.stringify([data.contents.id]));
+        } catch (error) {
+          console.error('Error saving content ID to localStorage:', error);
+        }
       }
 
-      console.log("Upload successful!");
+      console.log('Upload successful!');
       setUploadedFiles([]);
       setSelectedContentType(null);
       setShowModal(false);
-
+      
       fetchContentHistory(token);
       loadSelectedContents();
+
     } catch (error) {
-      console.error("Upload error:", error);
+      console.error('Upload error:', error);
+      if (error instanceof Error) {
+        if (error.message === 'Authentication token not found') {
+          console.error('Please login to upload files');
+        } else if (error.message.includes('localStorage')) {
+          console.error(error.message);
+        } else {
+          console.error(`Failed to upload files: ${error.message}`);
+        }
+      } else {
+        console.error('Failed to upload files. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleAddContent = (contentId: string) => {
-    const storedData = localStorage.getItem("selected_content_ids");
-    let selectedIds: string[] = [];
-
     try {
-      selectedIds = storedData ? JSON.parse(storedData) : [];
+      const selectedIds = JSON.parse(localStorage.getItem('selected_content_ids') || '[]');
+      if (!selectedIds.includes(contentId)) {
+        selectedIds.push(contentId);
+        localStorage.setItem('selected_content_ids', JSON.stringify(selectedIds));
+        loadSelectedContents();
+      }
     } catch (error) {
-      console.error("Error parsing selected_content_ids from localStorage:", error);
-    }
-
-    if (!selectedIds.includes(contentId)) {
-      selectedIds.push(contentId);
-      localStorage.setItem("selected_content_ids", JSON.stringify(selectedIds));
-      loadSelectedContents();
+      console.error('Error handling content addition:', error);
+      localStorage.setItem('selected_content_ids', '[]');
     }
   };
 
   const handleRemoveContent = (contentId: string) => {
-    const storedData = localStorage.getItem("selected_content_ids");
-    let selectedIds: string[] = [];
-
     try {
-      selectedIds = storedData ? JSON.parse(storedData) : [];
+      const selectedIds = JSON.parse(localStorage.getItem('selected_content_ids') || '[]');
+      const updatedIds = selectedIds.filter((id: string) => id !== contentId);
+      localStorage.setItem('selected_content_ids', JSON.stringify(updatedIds));
+      loadSelectedContents();
     } catch (error) {
-      console.error("Error parsing selected_content_ids from localStorage:", error);
+      console.error('Error handling content removal:', error);
+      localStorage.setItem('selected_content_ids', '[]');
     }
-
-    const updatedIds = selectedIds.filter((id) => id !== contentId);
-    localStorage.setItem("selected_content_ids", JSON.stringify(updatedIds));
-    loadSelectedContents();
   };
 
   const handleNext = () => {
     if (selectedContents.length > 0) {
-      router.push("/examtype");
+      router.push('/examtype');
     }
   };
 
