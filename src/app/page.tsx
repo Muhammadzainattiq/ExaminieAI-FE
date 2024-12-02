@@ -10,6 +10,7 @@ import MissionSection from "./components/Landing Page/MissionSection";
 import FAQSection from "./components/Landing Page/Faqs";
 import CTASection from "./components/Landing Page/cta";
 import HeroSection from "./components/Landing Page/hero";
+import Footer from "./components/Landing Page/footer";
 // import Navbar from "./components/Navbar/navbar"
 // import Sidebar from "./components/SiderBar/page";
 
@@ -22,9 +23,9 @@ export default function Home() {
  <HowItWorks/>
     <RoleToggle/>
     <InteractiveDemo/>
-    <FAQSection/>
+    <FAQSection/> 
      <CTASection/>  
-    
+    <Footer/>
 
     </>
   );
