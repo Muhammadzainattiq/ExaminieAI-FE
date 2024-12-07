@@ -1,16 +1,15 @@
 "use client";
-
 import Head from "next/head";
-import { motion } from "framer-motion";
-import { Pie } from "react-chartjs-2";
-import { FaRedo, FaArrowCircleRight } from "react-icons/fa";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaCheckCircle, FaRedo, FaArrowCircleRight } from "react-icons/fa";
+import { Pie } from "react-chartjs-2";
+import { motion } from "framer-motion";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// Define interfaces for result data
+// Define types for the result data
 interface OverallResult {
   result_id: string;
   exam_title: string;
@@ -45,14 +44,14 @@ interface ResultData {
   student_progress: StudentProgress;
 }
 
-export default function Result() {
+export default function Result(): JSX.Element {
   const [result, setResult] = useState<ResultData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchAndCompleteExam = async () => {
+    const fetchAndCompleteExam = async (): Promise<void> => {
       const examId = localStorage.getItem("exam-id");
       const attemptId = localStorage.getItem("attemptID");
       const accessToken = localStorage.getItem("access_token");
@@ -64,6 +63,7 @@ export default function Result() {
       }
 
       try {
+        // Step 1: Complete the Exam Attempt
         const completeResponse = await fetch(
           `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/complete_exam_attempt/${examId}/${attemptId}`,
           {
@@ -82,6 +82,7 @@ export default function Result() {
           return;
         }
 
+        // Step 2: Fetch the Exam Result
         const resultResponse = await fetch(
           `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/results/generate_and_update_result/${attemptId}`,
           {
@@ -102,9 +103,11 @@ export default function Result() {
 
         const resultData: ResultData = await resultResponse.json();
         setResult(resultData);
+
+        // Save result data in local storage for potential reuse
         localStorage.setItem("result", JSON.stringify(resultData));
         setLoading(false);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Error during exam completion or result fetching:", error);
         setError("An unexpected error occurred. Please try again.");
         setLoading(false);
@@ -114,15 +117,15 @@ export default function Result() {
     fetchAndCompleteExam();
   }, []);
 
-  const retakeExam = () => {
+  const retakeExam = (): void => {
     localStorage.removeItem("exam-id");
     localStorage.removeItem("attemptID");
-    router.push("/exams");
+    router.push("/exams"); // Redirect to the exam page or dashboard
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-green-50">
+      <div className="flex items-center justify-center min-h-screen bg-green-100">
         <div className="text-green-500 font-semibold">Loading your result...</div>
       </div>
     );
@@ -130,12 +133,12 @@ export default function Result() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-red-50">
-        <div className="bg-red-100 text-red-600 p-6 rounded shadow-lg">
+      <div className="flex items-center justify-center min-h-screen bg-red-100">
+        <div className="bg-red-500 text-white p-6 rounded shadow-lg">
           <h1 className="text-xl font-bold">Error</h1>
           <p className="mt-4">{error}</p>
           <button
-            className="mt-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="mt-6 bg-white text-red-500 px-4 py-2 rounded shadow hover:bg-gray-200"
             onClick={() => router.push("/dashboard")}
           >
             Go to Dashboard
@@ -147,21 +150,27 @@ export default function Result() {
 
   if (!result) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-yellow-50">
-        <div className="text-yellow-500 font-semibold">No result data found. Please try again.</div>
+      <div className="flex items-center justify-center min-h-screen bg-yellow-100">
+        <div className="text-yellow-500 font-semibold">
+          No result data found. Please try again.
+        </div>
       </div>
     );
   }
 
-  const { overall_result } = result;
+  const { overall_result, question_results } = result;
 
+  // Pie chart data
   const pieData = {
-    labels: ["Obtained Marks", "Remaining Marks"],
+    labels: ["Correct Answers", "Incorrect Answers"],
     datasets: [
       {
-        data: [overall_result.obtained_marks, overall_result.total_marks - overall_result.obtained_marks],
-        backgroundColor: ["#38A169", "#C6F6D5"],
-        hoverBackgroundColor: ["#2F855A", "#9AE6B4"],
+        data: [
+          overall_result.obtained_marks,
+          overall_result.total_marks - overall_result.obtained_marks,
+        ],
+        backgroundColor: ["#38A169", "#D4E157"],
+        hoverBackgroundColor: ["#2F855A", "#9E9E9E"],
       },
     ],
   };
@@ -171,48 +180,67 @@ export default function Result() {
       <Head>
         <title>Exam Result</title>
       </Head>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-green-50 p-6">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-green-100 p-6">
         <motion.div
-          className="bg-green-600 shadow-lg rounded-lg p-8 w-full max-w-4xl"
+          className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl font-bold text-center text-white mb-6">
-            {overall_result.exam_title}
+          <h1 className="text-5xl font-bold text-center text-green-500 mt-11 mb-8">
+            Your Result
           </h1>
-
+<div className="flex justify-center items-center">
+          {/* Pie Chart */}
           <motion.div
-            className="flex justify-center mb-8"
+            className="flex justify-center mb-6 w-52"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <Pie data={pieData} options={{ responsive: true, maintainAspectRatio: false }} height={200} width={200} />
+            <Pie data={pieData} options={{ responsive: true }} />
           </motion.div>
+          </div>
+          <div className="flex text-green-700 text-lg mb-4 gap-14 justify-center bg-green-200 p-6 rounded-lg shadow-xl">
+            <p>
+              <span className="font-bold text-2xl">Total Marks: <br /></span> <span className="text-2xl text-green-800">{overall_result.total_marks}</span>
+            </p>
+            <p>
+              <span className="font-bold text-2xl">Obtained Marks:<br /></span> <span className="text-2xl text-green-800">{overall_result.obtained_marks}</span>
+            </p>
+            <p>
+              <span className="font-bold text-2xl">Percentage:<br /></span><span className="text-2xl text-green-800"> {overall_result.percentage}%</span>
+            </p>
+            <p>
+              <span className="font-bold text-2xl">Grade:<br /></span> <span className="text-2xl text-green-800">{overall_result.grade}</span>
+            </p>
+          </div>
 
-          <div className="grid grid-cols-2 gap-4 text-white text-lg">
-            <div>
-              <h2 className="text-2xl font-extrabold">Total Marks</h2>
-              <p>{overall_result.total_marks}</p>
-            </div>
-            <div>
-              <h2 className="text-2xl font-extrabold">Obtained Marks</h2>
-              <p>{overall_result.obtained_marks}</p>
-            </div>
-            <div>
-              <h2 className="text-2xl font-extrabold">Percentage</h2>
-              <p>{overall_result.percentage}%</p>
-            </div>
-            <div>
-              <h2 className="text-2xl font-extrabold">Grade</h2>
-              <p>{overall_result.grade}</p>
-            </div>
+          <h2 className="flex justify-center text-3xl mt-20 font-bold text-green-500 mb-4">Detailed Feedback</h2>
+          <div className="bg-green-200 rounded-lg shadow p-4 text-green-900 mb-10 mt-10">
+            {question_results.map((question, index) => (
+              <div key={question.question_id} className="mb-4">
+                <h3 className="font-semibold">
+                  {index + 1}. {question.statement}
+                </h3>
+                <p>
+                  <span className="font-semibold">Your Answer:</span>{" "}
+                  {question.response || "Unattempted"}
+                </p>
+                <p>
+                  <span className="font-semibold">Marks:</span> {question.obtained_marks}/
+                  {question.total_marks}
+                </p>
+                <p className="mt-2">
+                  <span className="font-semibold">Feedback:</span> {question.feedback}
+                </p>
+              </div>
+            ))}
           </div>
 
           <div className="flex justify-around mt-6">
             <motion.button
-              className="bg-white text-green-600 px-4 py-2 rounded shadow hover:bg-gray-100 flex items-center gap-2"
+              className="bg-white text-green-500 px-4 py-2 rounded shadow hover:bg-gray-200 flex items-center gap-2"
               onClick={retakeExam}
               whileHover={{ scale: 1.1 }}
               transition={{ type: "spring", stiffness: 300 }}
@@ -220,12 +248,12 @@ export default function Result() {
               <FaRedo /> Retake Exam
             </motion.button>
             <motion.button
-              className="bg-white text-green-600 px-4 py-2 rounded shadow hover:bg-gray-100 flex items-center gap-2"
+              className="bg-white text-green-500 px-4 py-2 rounded shadow hover:bg-gray-200 flex items-center gap-2"
               onClick={() => router.push("/dashboard")}
               whileHover={{ scale: 1.1 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <FaArrowCircleRight /> View More Exams
+              <FaArrowCircleRight /> Dashboard
             </motion.button>
           </div>
         </motion.div>

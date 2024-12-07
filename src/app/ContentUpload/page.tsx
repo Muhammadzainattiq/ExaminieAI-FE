@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import YouTubeLinkPad from "../components/content/youtube";
-import ArticleSubmissionPage from "../components/content/article"; 
+import ArticleSubmissionPage from "../components/content/article";
 import TextPad from "../components/content/freetext";
 import TopicSubmissionPage from "../components/content/topic";
 import ContentUpload from "../components/content/sixcard";
@@ -59,15 +59,14 @@ const ExamContentUpload: React.FC = () => {
     <div className="flex">
       <Sidebar />
       <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-[240px]'}`}>
-        <div className="relative min-h-screen bg-gradient-to-r from-green-100 to-white">
+        <div className="relative min-h-screen bg-gradient-to-r from-green-200 via-green-300 to-white">
           <div className={`flex flex-col items-center p-8 ${selectedContentType && !isMinimized ? "pointer-events-none" : ""}`}>
             <div className="text-center mb-10">
-              <h1 className="text-4xl font-extrabold bg-gradient-to-r from-green-900 to-green-700 text-transparent bg-clip-text mb-4 leading-tight">
+              <h1 className="text-4xl font-extrabold text-transparent bg-gradient-to-r from-green-900 to-green-700 bg-clip-text mb-4 leading-tight">
                 Select the Content Type to Personalize Your Exam
               </h1>
               <p className="text-lg max-w-2xl mx-auto mb-6 text-green-800">
-                Choose the type of content that best suits your exam requirements.
-                Upload new files from your collection or reuse existing materials to create a custom, interactive exam experience.
+                Choose the type of content that best suits your exam requirements. Upload new files from your collection or reuse existing materials to create a custom, interactive exam experience.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
@@ -75,7 +74,7 @@ const ExamContentUpload: React.FC = () => {
                   <div
                     key={contentType.name}
                     onClick={() => handleSelectContentType(contentType.name)}
-                    className={`cursor-pointer flex flex-col items-center p-6 border rounded-lg transition-transform transform hover:scale-105 ${selectedContentType === contentType.name ? "border-green-900 shadow-lg" : "border-green-500 shadow-sm"} bg-gradient-to-r from-green-200 to-white hover:bg-gradient-to-l`}
+                    className={`cursor-pointer flex flex-col items-center p-6 border rounded-lg transition-transform transform hover:scale-105 hover:shadow-lg ${selectedContentType === contentType.name ? "border-green-800 bg-gradient-to-r from-green-400 to-green-500" : "border-green-600 bg-gradient-to-r from-green-200 to-white"}`}
                   >
                     <div className="text-4xl mb-4 text-green-900">{contentType.icon}</div>
                     <h3 className="font-semibold text-lg text-green-900">{contentType.name}</h3>

@@ -29,6 +29,13 @@ const ExamList = () => {
   const router = useRouter();
 
   useEffect(() => {
+    localStorage.removeItem("attemptID")
+    localStorage.removeItem("exam-id")
+    localStorage.removeItem('attempt-id')
+    localStorage.removeItem('attempt_id')
+    localStorage.removeItem('selectedExamType')
+    localStorage.removeItem('selected_content_ids')
+
     const fetchProgressData = async () => {
       try {
         const token = localStorage.getItem('access_token');
