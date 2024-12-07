@@ -35,10 +35,11 @@ const ExamTypeSelectionPage = () => {
     return typeMap[type] || type;
   };
   
-  const handleTypeSelect = (type: string) => {
-    console.log('Selected exam type:', type);
-    setSelectedType(type);
-  };
+const handleTypeSelect = (type: string) => {
+  console.log('Selected exam type:', type);
+  setSelectedType(type);
+  localStorage.setItem('selectedExamType', type); // Save the selected exam type in local storage
+};
 
   const handleNextClick = () => {
     try {
