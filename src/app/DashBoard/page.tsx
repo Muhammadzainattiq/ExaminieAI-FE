@@ -147,11 +147,9 @@ const ExamList = () => {
     return (
       <g>
         <path
-          d={`M ${cx},${cy} L ${cx + outerRadius * Math.cos(startAngle)},${
-            cy + outerRadius * Math.sin(startAngle)
-          } A ${outerRadius},${outerRadius} 0 0 1 ${
-            cx + outerRadius * Math.cos(endAngle)
-          },${cy + outerRadius * Math.sin(endAngle)} Z`}
+          d={`M ${cx},${cy} L ${cx + outerRadius * Math.cos(startAngle)},${cy + outerRadius * Math.sin(startAngle)
+            } A ${outerRadius},${outerRadius} 0 0 1 ${cx + outerRadius * Math.cos(endAngle)
+            },${cy + outerRadius * Math.sin(endAngle)} Z`}
           fill={fill}
           className="transition-all duration-300 ease-in-out"
           transform={hoveredPieIndex !== null ? `scale(1.1) translate(-${cx * 0.1},-${cy * 0.1})` : 'scale(1)'}
@@ -163,7 +161,7 @@ const ExamList = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Mobile Menu Button */}
-      <button 
+      <button
         className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-green-500 text-white"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
@@ -197,7 +195,7 @@ const ExamList = () => {
             {menuItems.map((item, index) => (
               <li key={index}>
                 <Link href={item.href}>
-                  <div 
+                  <div
                     className="flex items-center space-x-4 text-gray-600 hover:text-green-500 hover:bg-green-50 rounded-lg p-2 transition-all duration-200 hover:translate-x-1"
                   >
                     {item.icon}
@@ -213,7 +211,7 @@ const ExamList = () => {
 
         {/* Logout Button */}
         <div className="absolute bottom-4 left-0 right-0 p-4">
-          <button 
+          <button
             className="flex items-center space-x-4 text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-lg p-2 transition-all duration-200 w-full hover:translate-x-1"
           >
             <FaSignOutAlt className="w-6 h-6" />
@@ -223,9 +221,9 @@ const ExamList = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Main Content */}
-      <div 
+      <div
         className="flex-1 p-8 transition-all duration-300"
         style={{
           marginLeft: isCollapsed ? "80px" : "240px",
@@ -253,29 +251,29 @@ const ExamList = () => {
         </div>
 
         {/* Performance Cards */}
-<div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-  {[
-    { icon: FaBookOpen, label: 'Total Exams', value: progressData.total_exams_taken, color: 'blue' },
-    { icon: FaCheck, label: 'Total Pass', value: progressData.exams_passed, color: 'green' },
-    { icon: FaTimes, label: 'Total Fail', value: progressData.exams_failed, color: 'red' },
-    {
-      icon: FaPercentage,
-      label: 'Success Rate',
-      value: `${progressData.overall_percentage.toFixed(2)}%`, // Truncate to 2 decimal places
-      color: 'purple',
-    },
-    { icon: FaGraduationCap, label: 'Total Grade', value: progressData.overall_grade, color: 'indigo' },
-  ].map(({ icon: Icon, label, value, color }) => (
-    <div
-      key={label}
-      className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105"
-    >
-      <Icon className={`w-8 h-8 text-${color}-500 mb-4`} />
-      <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
-      <p className="text-2xl font-bold text-green-600">{value}</p>
-    </div>
-  ))}
-</div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+          {[
+            { icon: FaBookOpen, label: 'Total Exams', value: progressData.total_exams_taken, color: 'blue' },
+            { icon: FaCheck, label: 'Total Pass', value: progressData.exams_passed, color: 'green' },
+            { icon: FaTimes, label: 'Total Fail', value: progressData.exams_failed, color: 'red' },
+            {
+              icon: FaPercentage,
+              label: 'Success Rate',
+              value: `${progressData.overall_percentage.toFixed(2)}%`, // Truncate to 2 decimal places
+              color: 'purple',
+            },
+            { icon: FaGraduationCap, label: 'Total Grade', value: progressData.overall_grade, color: 'indigo' },
+          ].map(({ icon: Icon, label, value, color }) => (
+            <div
+              key={label}
+              className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105"
+            >
+              <Icon className={`w-8 h-8 text-${color}-500 mb-4`} />
+              <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
+              <p className="text-2xl font-bold text-green-600">{value}</p>
+            </div>
+          ))}
+        </div>
 
         {/* Charts Section */}
         <div className="space-y-8">
@@ -301,8 +299,8 @@ const ExamList = () => {
                       activeShape={renderActiveShape}
                     >
                       {passFailData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
+                        <Cell
+                          key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
                           className="transition-transform duration-300"
                         />
@@ -342,20 +340,20 @@ const ExamList = () => {
                   <YAxis yAxisId="right" orientation="right" />
                   <Tooltip />
                   <Legend />
-                  <Line 
-                    yAxisId="left" 
-                    type="monotone" 
-                    dataKey="percentage" 
-                    stroke="#4CAF50" 
-                    name="Percentage" 
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="percentage"
+                    stroke="#4CAF50"
+                    name="Percentage"
                     dot={{ r: 4 }}
                     activeDot={{ r: 8 }}
                   />
-                  <Line 
-                    yAxisId="right" 
-                    type="monotone" 
-                    dataKey="grade" 
-                    stroke="#2196F3" 
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="grade"
+                    stroke="#2196F3"
                     name="Grade"
                     dot={{ r: 4 }}
                     activeDot={{ r: 8 }}
@@ -369,5 +367,5 @@ const ExamList = () => {
     </div>
   );
 };
- 
+
 export default ExamList;
