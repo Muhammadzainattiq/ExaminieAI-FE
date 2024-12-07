@@ -225,7 +225,8 @@ const AttemptExamPage = () => {
   if (submitSuccess) {
     return (
       <div className="bg-green-50 min-h-screen flex flex-col items-center justify-center">
-        <div className="bg-white shadow-lg rounded-lg p-8 text-center">
+     
+     <div className="bg-white shadow-lg rounded-lg p-8 text-center">
           <div className="text-green-600 text-5xl mb-4">✓</div>
           <h2 className="text-2xl font-bold text-green-800 mb-4">Exam Submitted Successfully!</h2>
           <p className="text-gray-600 mb-6">Thank you for completing the exam. Your responses have been recorded.</p>
@@ -233,7 +234,7 @@ const AttemptExamPage = () => {
             onClick={() => window.location.href = '/complete_result'}
             className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
           >
-            Return to Dashboard
+            See Result
           </button>
         </div>
       </div>
@@ -284,14 +285,14 @@ const AttemptExamPage = () => {
                   <div
                     key={key}
                     className={`p-2 rounded-lg cursor-pointer ${
-                      answers[currentQuestionIndex]?.response === value
+                      answers[currentQuestionIndex]?.response === key
                         ? "bg-green-300"
                         : "bg-gray-100 hover:bg-gray-200"
                     }`}
                     onClick={() =>
                       handleOptionSelect(
                         examDetails?.questions[currentQuestionIndex].id || "",
-                        value
+                        key
                       )
                     }
                   >

@@ -253,24 +253,29 @@ const ExamList = () => {
         </div>
 
         {/* Performance Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          {[
-            { icon: FaBookOpen, label: 'Total Exams', value: progressData.total_exams_taken, color: 'blue' },
-            { icon: FaCheck, label: 'Total Pass', value: progressData.exams_passed, color: 'green' },
-            { icon: FaTimes, label: 'Total Fail', value: progressData.exams_failed, color: 'red' },
-            { icon: FaPercentage, label: 'Success Rate', value: `${progressData.overall_percentage}%`, color: 'purple' },
-            { icon: FaGraduationCap, label: 'Total Grade', value: progressData.overall_grade, color: 'indigo' }
-          ].map(({ icon: Icon, label, value, color }) => (
-            <div
-              key={label}
-              className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105"
-            >
-              <Icon className={`w-8 h-8 text-${color}-500 mb-4`} />
-              <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
-              <p className="text-2xl font-bold text-green-600">{value}</p>
-            </div>
-          ))}
-        </div>
+<div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+  {[
+    { icon: FaBookOpen, label: 'Total Exams', value: progressData.total_exams_taken, color: 'blue' },
+    { icon: FaCheck, label: 'Total Pass', value: progressData.exams_passed, color: 'green' },
+    { icon: FaTimes, label: 'Total Fail', value: progressData.exams_failed, color: 'red' },
+    {
+      icon: FaPercentage,
+      label: 'Success Rate',
+      value: `${progressData.overall_percentage.toFixed(2)}%`, // Truncate to 2 decimal places
+      color: 'purple',
+    },
+    { icon: FaGraduationCap, label: 'Total Grade', value: progressData.overall_grade, color: 'indigo' },
+  ].map(({ icon: Icon, label, value, color }) => (
+    <div
+      key={label}
+      className="bg-white p-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105"
+    >
+      <Icon className={`w-8 h-8 text-${color}-500 mb-4`} />
+      <h3 className="text-lg font-semibold text-gray-800">{label}</h3>
+      <p className="text-2xl font-bold text-green-600">{value}</p>
+    </div>
+  ))}
+</div>
 
         {/* Charts Section */}
         <div className="space-y-8">
