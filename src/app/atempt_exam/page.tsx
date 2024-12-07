@@ -89,12 +89,12 @@ const AttemptExamPage = () => {
   const startExamAttempt = async () => {
     const examId = localStorage.getItem("exam-id");
     const accessToken = localStorage.getItem("access_token");
-
+  
     if (!examId || !accessToken) {
       setError("Missing exam ID or access token.");
       return;
     }
-
+  
     try {
       const response = await fetch(
         `https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/exams/start_exam_attempt/${examId}/`,
@@ -106,15 +106,24 @@ const AttemptExamPage = () => {
           },
         }
       );
-
+  
       const responseData = await response.json();
       console.log("Start exam attempt response:", responseData);
-
+  
       if (!response.ok) {
         setError(`Failed to start the exam: ${responseData.message}`);
         return;
       }
-
+  
+      // Save attempt ID to local storage
+      const attemptId = responseData.attempt?.id;
+      if (attemptId) {
+        localStorage.setItem("attemptID", attemptId);
+        console.log("Attempt ID saved to local storage:", attemptId);
+      } else {
+        console.warn("Attempt ID is missing in the response.");
+      }
+  
       setAttemptStarted(true);
       setTimeLeft((examDetails?.time_limit || 0) * 60); // Convert minutes to seconds for timer
     } catch (err) {
@@ -122,6 +131,7 @@ const AttemptExamPage = () => {
       setError("An error occurred while starting the exam.");
     }
   };
+  
 
   const handleOptionSelect = (questionId: string, selectedOption: string) => {
     console.log("Selected option for question", questionId, ":", selectedOption);
@@ -220,7 +230,7 @@ const AttemptExamPage = () => {
           <h2 className="text-2xl font-bold text-green-800 mb-4">Exam Submitted Successfully!</h2>
           <p className="text-gray-600 mb-6">Thank you for completing the exam. Your responses have been recorded.</p>
           <button
-            onClick={() => window.location.href = '/DashBoard'}
+            onClick={() => window.location.href = '/complete_result'}
             className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
           >
             Return to Dashboard
