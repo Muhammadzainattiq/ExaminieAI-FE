@@ -130,7 +130,7 @@ const Home: NextPage = () => {
                     <FaUser className="text-white" />
                   </button>
                 ) : (
-                  <button onClick={() => window.location.href = '/Login'} className="bg-green-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
+                  <button onClick={() => window.location.href = '/login'} className="bg-green-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                     Login
                   </button>
                 )}

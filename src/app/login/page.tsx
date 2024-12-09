@@ -2,25 +2,56 @@
 
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Success message state
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
+
+  const checkUserProfile = async (token: string) => {
+    try {
+      const response = await fetch(
+        "https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/student/get_student_profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        // If profile exists, redirect to the dashboard
+        router.push("/DashBoard");
+      } else {
+        const errorData = await response.json();
+        if (errorData.detail === "Student profile not found.") {
+          // If no profile exists, redirect to the onboarding page
+          router.push("/onboarding_questions");
+        } else {
+          throw new Error("Unexpected error during profile check.");
+        }
+      }
+    } catch (err) {
+      console.error("Error checking user profile:", err);
+      setError("Failed to verify user profile. Please try again.");
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-        const formData = new URLSearchParams();
-      formData.append('username', email);
-      formData.append('password', password);
+      const formData = new URLSearchParams();
+      formData.append("username", email);
+      formData.append("password", password);
+
       const response = await fetch(
         "https://examinieai.kindsky-c4c0142e.eastus.azurecontainerapps.io/auth/login",
         {
@@ -35,11 +66,10 @@ export default function LoginPage() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("access_token", data.access_token); // Save access token to local storage
-        setSuccessMessage("Login successful! Redirecting...");
-        setTimeout(() => {
-          setSuccessMessage(null);
-          router.push("/DashBoard"); // Redirect to a dashboard or homepage
-        }, 2000);
+        setSuccessMessage("Login successful! Verifying profile...");
+
+        // Check if the user has a profile
+        await checkUserProfile(data.access_token);
       } else {
         const errorData = await response.json();
         setError(errorData.detail || "Invalid login credentials.");
@@ -142,7 +172,6 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* Success message popup */}
           {successMessage && (
             <div className="mt-4 p-2 bg-green-200 text-green-800 rounded text-center">
               {successMessage}
