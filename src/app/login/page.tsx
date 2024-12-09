@@ -27,7 +27,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         // If profile exists, redirect to the dashboard
-        router.push("/DashBoard");
+        router.push("/dashboard");
       } else {
         const errorData = await response.json();
         if (errorData.detail === "Student profile not found.") {
