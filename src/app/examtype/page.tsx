@@ -51,7 +51,7 @@ const ExamTypeSelectionPage = () => {
         numberOfQuestions,
         difficulty: getDifficultyString(difficultyLevel),
         isTimed,
-        duration: isTimed ? duration : 0,
+        duration: isTimed ? duration : 60,
         marksPerQuestion,
         totalMarks,
         language: "english"
