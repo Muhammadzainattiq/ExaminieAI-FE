@@ -108,6 +108,13 @@ const ShortQuestionsPage = () => {
         setError(`Failed to start the exam: ${responseData.message}`);
         return;
       }
+      const attemptId = responseData.attempt?.id;
+      if (attemptId) {
+        localStorage.setItem("attemptID", attemptId);
+        console.log("Attempt ID saved to local storage:", attemptId);
+      } else {
+        console.warn("Attempt ID is missing in the response.");
+      }
 
       setAttemptStarted(true);
       setTimeLeft((examDetails?.time_limit || 0) * 60); // Convert minutes to seconds for timer
@@ -206,10 +213,10 @@ const ShortQuestionsPage = () => {
         <div className="bg-white shadow-lg rounded-lg p-8 text-center">
           <h2 className="text-2xl font-bold text-green-800 mb-4">Exam Submitted Successfully!</h2>
           <button
-            onClick={() => (window.location.href = "/DashBoard")}
+            onClick={() => (window.location.href = "/complete_result")}
             className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
           >
-            Return to Dashboard
+            Go to result
           </button>
         </div>
       </div>

@@ -38,6 +38,8 @@ const ExamTypeSelectionPage = () => {
   const handleTypeSelect = (type: string) => {
     console.log('Selected exam type:', type);
     setSelectedType(type);
+    const examType = getQuestionType(type);
+    localStorage.setItem('selectedExamType', examType)
   };
 
   const handleNextClick = () => {

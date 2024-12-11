@@ -25,9 +25,10 @@ const ExamGenerationAndConfirmationPage = () => {
     try {
       const token = localStorage.getItem('access_token');
       const selectedContentIds = JSON.parse(localStorage.getItem('selected_content_ids') || '[]');
+      const examType = localStorage.getItem('selectedExamType'); // Retrieve exam type
   
-      if (!token || !examParams || !selectedContentIds.length) {
-        throw new Error('Missing authentication token, exam parameters, or content IDs');
+      if (!token || !examParams || !selectedContentIds.length || !examType) {
+        throw new Error('Missing authentication token, exam parameters, content IDs, or exam type');
       }
   
       const requestBody = {
@@ -38,7 +39,7 @@ const ExamGenerationAndConfirmationPage = () => {
         num_questions: examParams.numberOfQuestions,
         marks_per_question: examParams.marksPerQuestion,
         time_limit: examParams.isTimed ? examParams.duration : 0,
-        language: examParams.language || "en"
+        language: examParams.language || "en",
       };
   
       console.log('Request Body:', requestBody);
@@ -49,9 +50,9 @@ const ExamGenerationAndConfirmationPage = () => {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         }
       );
   
@@ -68,12 +69,17 @@ const ExamGenerationAndConfirmationPage = () => {
   
       setMessage({ text: 'Exam generated successfully!', type: 'success' });
   
+      // Dynamic redirect based on exam type
       setTimeout(() => {
-        router.push('/atempt_exam'); // Corrected the typo from 'atempt_exam' to 'attempt_exam'
+        const redirectUrl = `/exam/${examType.toLowerCase()}`; // Construct dynamic URL
+        router.push(redirectUrl);
       }, 2000);
-    } catch (error: unknown) { // Specified the type of error to avoid TypeScript error
+    } catch (error: unknown) {
       console.error('Error generating exam:', error);
-      setMessage({ text: (error as Error).message || 'Failed to generate exam. Please try again.', type: 'error' });
+      setMessage({
+        text: (error as Error).message || 'Failed to generate exam. Please try again.',
+        type: 'error',
+      });
     } finally {
       setLoading(false);
     }
