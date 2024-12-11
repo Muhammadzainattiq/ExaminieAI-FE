@@ -258,7 +258,7 @@ const ExamList = () => {
             { icon: FaBookOpen, label: 'Total Exams', value: progressData.total_exams_taken, color: 'blue' },
             { icon: FaCheck, label: 'Total Pass', value: progressData.exams_passed, color: 'green' },
             { icon: FaTimes, label: 'Total Fail', value: progressData.exams_failed, color: 'red' },
-            { icon: FaPercentage, label: 'Success Rate', value: `${progressData.overall_percentage}%`, color: 'purple' },
+            { icon: FaPercentage, label: 'Success Rate', value: `${parseFloat(progressData.overall_percentage.toFixed(2))}%`, color: 'purple' },
             { icon: FaGraduationCap, label: 'Total Grade', value: progressData.overall_grade, color: 'indigo' }
           ].map(({ icon: Icon, label, value, color }) => (
             <div
