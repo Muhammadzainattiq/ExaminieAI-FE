@@ -75,7 +75,7 @@ const ContentUpload: React.FC = () => {
       setHistory(fetchedHistory);
       loadSelectedContents(fetchedHistory); // Update selected contents based on the fetched history
     } catch (error) {
-      console.error('Error fetching content history:', error);
+      ;
     }
   };
   
